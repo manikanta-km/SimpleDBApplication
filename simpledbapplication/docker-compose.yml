@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"  # Expose the application port
+    environment:
+      - SPRING_REDIS_HOST=redis
+      - SPRING_REDIS_PORT=6379
+    depends_on:
+      - redis
+    volumes:
+      - ./table.txt:/app/table.txt  # Mount the file-based DB files
+      - ./metadata.txt:/app/metadata.txt
+
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"  # Expose Redis port
+    volumes:
+      - redis-data:/data  # Persistent storage for Redis data
+
+volumes:
+  redis-data:
